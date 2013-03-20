@@ -1,0 +1,7 @@
+
+form(method='post', action='#{path}#{item.id}')
+  input(type='hidden', name='_method', value='put')
+
+  !=form.toHTML()
+
+  button(type='submit') Save

@@ -1,0 +1,15 @@
+{
+  "name": "express-forms",
+  "version": "0.0.0",
+  "description": "An express forms generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "git@github.com:tellnes/express-forms.git",
+  "author": "Christian Tellnes <christian@tellnes.no> (http://christian.tellnes.com)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "~3.1.0"
+  }
+}

@@ -1,0 +1,17 @@
+
+a(href='#{path}create') Create
+
+table
+  thead
+    tr
+      td
+      each field in fields
+        th=field
+  tbody
+    each item in list
+      tr
+        td
+          a(href='#{path}#{item.id}') Edit
+          a(href='#{path}#{item.id}/delete') Delete
+        each fieldName, fieldKey in fields
+          td=item[fieldKey]

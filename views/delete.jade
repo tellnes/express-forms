@@ -1,0 +1,7 @@
+
+form(method='post', action='#{path}#{item.id}')
+  input(type='hidden', name='_method', value='delete')
+
+  p Are you sure?
+
+  button(type='submit') Delete
