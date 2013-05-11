@@ -46,11 +46,11 @@ module.exports = function (options) {
       , view = item ? 'edit' : 'create'
     form.handle(req, {
       success: function (form) {
-        function finish(err) {
+        function finish(err, item) {
           if (err) return next(err)
           res.format({
             html: function () {
-              res.redirect(app.path())
+              res.redirect(res.locals.path + item.id)
             },
             json: function () {
               res.send({ok: true})
@@ -148,7 +148,7 @@ module.exports = function (options) {
       if (err) return next(err)
       res.format({
         html: function () {
-          res.redirect(app.path())
+          res.redirect(res.locals.path)
         },
         json: function () {
           res.send({ok: true})
