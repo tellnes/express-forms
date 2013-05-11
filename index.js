@@ -111,7 +111,7 @@ module.exports = function (options) {
   app.post('/', handleForm)
 
   function findItem(req, res, next) {
-    options.one(req.params.item_id, function (err, item) {
+    options.get(req.params.item_id, function (err, item) {
       if (err) return next(err)
       if (!item) return next('route')
       req._express_forms_item = item
