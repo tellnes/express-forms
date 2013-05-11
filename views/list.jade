@@ -11,7 +11,7 @@ table
     each item in list
       tr
         td
-          a(href='#{path}#{item.id}') Edit
+          a(href='#{path}#{item.id}/edit') Edit
           a(href='#{path}#{item.id}/delete') Delete
         each fieldName, fieldKey in fields
           td=item[fieldKey]
