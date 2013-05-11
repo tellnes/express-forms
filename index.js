@@ -41,7 +41,7 @@ module.exports = function (options) {
 
 
   function handleForm(req, res, next) {
-    var item = req._orm_forms_item
+    var item = req._express_forms_item
     form.handle(req, {
       success: function (form) {
         function finish(err) {
@@ -112,13 +112,13 @@ module.exports = function (options) {
     options.one(req.params.item_id, function (err, item) {
       if (err) return next(err)
       if (!item) return next('route')
-      req._orm_forms_item = item
+      req._express_forms_item = item
       next()
     })
   }
 
   app.get('/:item_id', findItem, function (req, res, next) {
-    var item = req._orm_forms_item
+    var item = req._express_forms_item
     res.format({
       'html': function () {
         renderForm(item, form.bind(item), res)
@@ -132,11 +132,11 @@ module.exports = function (options) {
   app.put('/:item_id', findItem, handleForm)
 
   app.get('/:item_id/delete', findItem, function (req, res, next) {
-    res.render('delete', { item: req._orm_forms_item })
+    res.render('delete', { item: req._express_forms_item })
   })
 
   app.del('/:item_id', findItem, function (req, res, next) {
-    var item = req._orm_forms_item
+    var item = req._express_forms_item
     ;(options.delete || options.del)(item, function (err) {
       if (err) return next(err)
       res.format({
