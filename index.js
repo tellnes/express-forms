@@ -31,13 +31,31 @@ module.exports = function (options) {
     next()
   })
 
-  function renderForm(view, item, form, res) {
-    res.render( view
-              , { item: item || {}
-                , form: form
-                , fields: fields
-                }
-              )
+  function renderForm(view, item, form, req, res, next) {
+    if (options.beforeRenderForm) {
+      options.beforeRenderForm( { view: view
+                                , item: item
+                                , form: form
+                                , req: req
+                                , res: res
+                                , next: next
+                                }
+                              , then
+                              )
+    } else {
+      then()
+    }
+
+    function then(err) {
+      if (err) return next(err)
+
+      res.render( view
+                , { item: item || {}
+                  , form: form
+                  , fields: fields
+                  }
+                )
+    }
   }
 
 
@@ -66,7 +84,7 @@ module.exports = function (options) {
       error: function (form) {
         res.format({
           html: function () {
-            renderForm(view, item, form, res)
+            renderForm(view, item, form, req, res, next)
           },
           json: function  () {
             res.send({ error: 'validation error' })
@@ -77,9 +95,9 @@ module.exports = function (options) {
         res.format({
           html: function () {
             if (item) {
-              renderForm(view, item, form.bind(item), res)
+              renderForm(view, item, form.bind(item), req, res, next)
             } else {
-              renderForm(view, null, form, res)
+              renderForm(view, null, form, req, res, next)
             }
           },
           json: function () {
@@ -105,7 +123,7 @@ module.exports = function (options) {
   })
 
   app.get('/create', function (req, res, next) {
-    renderForm('create', null, form, res)
+    renderForm('create', null, form, req, res, next)
   })
 
   app.post('/', handleForm)
@@ -123,7 +141,7 @@ module.exports = function (options) {
     var item = req._express_forms_item
     res.format({
       'html': function () {
-        renderForm('view', item, form.bind(item), res)
+        renderForm('view', item, form.bind(item), req, res, next)
       },
       'json': function () {
         res.send(item)
@@ -133,7 +151,7 @@ module.exports = function (options) {
 
   app.get('/:item_id/edit', findItem, function (req, res, next) {
     var item = req._express_forms_item
-    renderForm('edit', item, form.bind(item), res)
+    renderForm('edit', item, form.bind(item), req, res, next)
   })
 
   app.put('/:item_id', findItem, handleForm)
