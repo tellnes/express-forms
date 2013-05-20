@@ -21,6 +21,8 @@ module.exports = function (options) {
   app.set('views', options.views || path.resolve(__dirname, 'views'))
   app.set('view engine', 'jade')
 
+  app.locals.form = form
+
   app.use(express.bodyParser())
   app.use(express.methodOverride())
 
