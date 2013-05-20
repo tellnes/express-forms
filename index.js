@@ -12,7 +12,7 @@ module.exports = function (options) {
 
   Object.keys(form.fields).forEach(function (name) {
     field = form.fields[name]
-    if (field.list !== false) {
+    if (field.list === true || (field.widget.type !== 'hidden' && field.list !== false)) {
       fields[name] = field.labelText(name)
     }
   })
