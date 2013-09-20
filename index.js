@@ -6,6 +6,7 @@ module.exports = function (options) {
   var app = express()
     , form = options.form
     , fields = {}
+    , defaultItem = options.defaultItem || {}
 
   if (!form)
     throw new Error('options.form must be defined.')
@@ -99,7 +100,7 @@ module.exports = function (options) {
             if (item) {
               renderForm(view, item, form.bind(item), req, res, next)
             } else {
-              renderForm(view, null, form, req, res, next)
+              renderForm(view, null, form.bind(defaultItem), req, res, next)
             }
           },
           json: function () {
@@ -125,7 +126,7 @@ module.exports = function (options) {
   })
 
   app.get('/create', function (req, res, next) {
-    renderForm('create', null, form, req, res, next)
+    renderForm('create', null, form.bind(defaultItem), req, res, next)
   })
 
   app.post('/', handleForm)
