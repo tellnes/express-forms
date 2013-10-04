@@ -1,6 +1,7 @@
 
 var express = require('express')
   , path = require('path')
+  , querystring = require('querystring')
 
 module.exports = function (options) {
   var app = express()
@@ -112,11 +113,18 @@ module.exports = function (options) {
   }
 
   app.get('/', function (req, res, next) {
-    options.list(function (err, list) {
+    options.list(req.query, function (err, list) {
       if (err) return next(err)
       res.format({
         html: function () {
-          res.render('list', { list: list, fields: fields })
+          res.locals.list = list
+          res.locals.fields = fields
+          res.locals.query = req.query
+          res.locals.link = function link(obj) {
+            return res.locals.path + '?' + querystring.stringify(obj)
+          }
+
+          res.render('list')
         },
         json: function () {
           res.send(list)
