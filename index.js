@@ -68,6 +68,44 @@ module.exports = function (options) {
       , view = item ? 'edit' : 'create'
     form.handle(req, {
       success: function (form) {
+        if (options.validate) {
+          options.validate(
+              { view: view
+              , item: item
+              , form: form
+              , data: form.data
+              , req: req
+              , res: res
+              , next: next
+              }
+            , validated
+            )
+        } else {
+          validated(null, true)
+        }
+
+        function validated(err, valid, reason) {
+          if (err) return next(err)
+
+          if (!valid) {
+            res.format(
+              { html: function () {
+                  renderForm(view, item, form, req, res, next)
+                }
+              , json: function () {
+                  res.send({ error: 'validation error', reason: reason })
+                }
+              })
+            return
+          }
+
+          if (item) {
+            options.update(item, form.data, finish)
+          } else {
+            options.create(form.data, finish)
+          }
+        }
+
         function finish(err, item) {
           if (err) return next(err)
           res.format({
@@ -78,11 +116,6 @@ module.exports = function (options) {
               res.send({ok: true})
             }
           })
-        }
-        if (item) {
-          options.update(item, form.data, finish)
-        } else {
-          options.create(form.data, finish)
         }
       },
       error: function (form) {
