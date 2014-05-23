@@ -25,7 +25,7 @@ module.exports = function (options) {
 
   app.locals.form = form
 
-  app.use(express.bodyParser())
+  app.use(express.urlencoded())
   app.use(express.methodOverride())
 
   app.use(function (req, res, next) {
