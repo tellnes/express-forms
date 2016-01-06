@@ -2,6 +2,8 @@
 var express = require('express')
   , path = require('path')
   , querystring = require('querystring')
+var urlencoded = require('body-parser').urlencoded
+var methodOverride = require('method-override')
 
 module.exports = function (options) {
   var app = express()
@@ -25,8 +27,14 @@ module.exports = function (options) {
 
   app.locals.form = form
 
-  app.use(express.urlencoded())
-  app.use(express.methodOverride())
+  app.use(urlencoded({ extended: true }))
+  app.use(methodOverride(function(req) {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+      var method = req.body._method
+      delete req.body._method
+      return method
+    }
+  }))
 
   app.use(function (req, res, next) {
     var p = app.path()
@@ -204,7 +212,7 @@ module.exports = function (options) {
     res.render('delete', { item: req._express_forms_item })
   })
 
-  app.del('/:item_id', findItem, function (req, res, next) {
+  app.delete('/:item_id', findItem, function (req, res, next) {
     var item = req._express_forms_item
     ;(options.delete || options.del)(item, function (err) {
       if (err) return next(err)
