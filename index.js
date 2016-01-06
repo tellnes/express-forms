@@ -4,6 +4,7 @@ var express = require('express')
   , querystring = require('querystring')
 var urlencoded = require('body-parser').urlencoded
 var methodOverride = require('method-override')
+var xtend = require('xtend')
 
 module.exports = function (options) {
   var app = express()
@@ -161,8 +162,11 @@ module.exports = function (options) {
           res.locals.list = list
           res.locals.fields = fields
           res.locals.query = req.query
+          res.locals.qs = function(obj) {
+            return querystring.stringify(xtend(req.query, obj))
+          }
           res.locals.link = function link(obj) {
-            return res.locals.path + '?' + querystring.stringify(obj)
+            return res.locals.path + '?' + res.locals.qs(obj)
           }
 
           res.render('list')
